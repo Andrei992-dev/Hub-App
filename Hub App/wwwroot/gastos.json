@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Nome": "Arroz Branco",
+    "Valor": 5,
+    "DataGasto": "2024-10-15T00:00:00"
+  },
+  {
+    "Id": 2,
+    "Nome": "Glutem",
+    "Valor": 7,
+    "DataGasto": "2024-10-15T00:00:00"
+  },
+  {
+    "Id": 4,
+    "Nome": "Carne",
+    "Valor": 65,
+    "DataGasto": "2024-09-15T00:00:00"
+  }
+]

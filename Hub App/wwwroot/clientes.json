@@ -1,0 +1,44 @@
+[
+  {
+    "Id": 1,
+    "Nome": "Andrei",
+    "Telefone": 75991240583,
+    "Endereco": "Aracaju, Sergipe",
+    "Ativo": false
+  },
+  {
+    "Id": 2,
+    "Nome": "Gustavo",
+    "Telefone": 7399807854,
+    "Endereco": "Bahia",
+    "Ativo": false
+  },
+  {
+    "Id": 3,
+    "Nome": "Andrei Mendes Gon\u00E7alves",
+    "Telefone": 75991240583,
+    "Endereco": "R. A Treze, Marcos Freire II",
+    "Ativo": true
+  },
+  {
+    "Id": 4,
+    "Nome": "Fabricia Cruz",
+    "Telefone": 73998709853,
+    "Endereco": "Aracaju, Sergipe",
+    "Ativo": true
+  },
+  {
+    "Id": 5,
+    "Nome": "Bruno Santos",
+    "Telefone": 11988702345,
+    "Endereco": "S\u00E3o Paulo, SP",
+    "Ativo": true
+  },
+  {
+    "Id": 6,
+    "Nome": "Isadora Facundes",
+    "Telefone": 779807644322,
+    "Endereco": "Cachoeira, Bahia",
+    "Ativo": true
+  }
+]

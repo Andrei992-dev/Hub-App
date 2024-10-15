@@ -1,0 +1,56 @@
+﻿@using Hub_App.Models.CalculadoraDiaria
+@model List<Gasto>
+@{
+    ViewData["Title"] = "Caluladora de Gastos";
+}
+<h2>Lista de Gastos</h2>
+
+<div>
+    <h4>Gastos do Dia: @ViewBag.TotalGastosDoDia.ToString("C")</h4>
+</div>
+<div>
+    <h4>Mês Atual: @ViewBag.TotalGastosDoMesAtual.ToString("C")</h4>
+</div>
+
+<div>
+    <h4>Mês Anterior: @ViewBag.TotalGastosDoMesAnterior.ToString("C")</h4>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(!Model.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center">Nenhum gasto encontrado.</td>
+            </tr>
+        }
+        else{
+            @foreach (var gasto in Model)
+            {
+                <tr>
+                    <td>@gasto.Id</td>
+                    <td>@gasto.Nome</td>
+                    <td>@gasto.Valor.ToString("C")</td>
+                    <td>@gasto.DataGasto.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@gasto.Id" class="btn btn-warning">Editar</a>
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@gasto.Id" />
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este gasto?');">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" asp-action="Create">Adicionar</a>

@@ -1,0 +1,140 @@
+﻿@using Hub_App.Models.ListaTarefas
+@model List<Tarefa>
+@{
+    ViewData["Title"] = "Caluladora de Gastos";
+}
+<h2>Lista de Tarefas</h2>
+<div>
+    <h4>Tarefas a Fazer</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Data de Criação</th>
+                <th scope="col">Data Prevista de Conclusão</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarefa in ViewBag.TarefasAFazer)
+            {
+                <tr>
+                    <td>@tarefa.Id</td>
+                    <td>@tarefa.Descricao</td>
+                    <td>@tarefa.DataCriacao.ToString("dd/MM/yyyy")</td>
+                    <td>@tarefa.DataPrevisaConclusao.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Ações">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editarTarefaModal"
+                                    onclick="preencherFormularioEditar(@tarefa.Id, '@tarefa.Descricao', '@tarefa.DataPrevisaConclusao.ToString("yyyy-MM-dd")')">
+                                Editar
+                            </button>
+                            <form method="post" asp-action="MarcarComoConcluida" class="d-inline" style="margin: 0 10px">
+                                <input type="hidden" name="id" value="@tarefa.Id" />
+                                <button type="submit" class="btn btn-success">Concluir</button>
+                            </form>
+                            <form method="post" asp-action="ExcluirTarefa" class="d-inline">
+                                <input type="hidden" name="id" value="@tarefa.Id" />
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este gasto?');">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h4>Tarefas Concluídas</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Data de Conclusão</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarefa in ViewBag.TarefasConcluidas)
+            {
+                <tr>
+                    <td>@tarefa.Id</td>
+                    <td>@tarefa.Descricao</td>
+                    <td>@tarefa.DataConclusao?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <form method="post" asp-action="ExcluirTarefa">
+                            <input type="hidden" name="id" value="@tarefa.Id" />
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este gasto?');">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Botão para abrir o modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adicionarTarefaModal">
+    Adicionar Tarefa
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="adicionarTarefaModal" tabindex="-1" aria-labelledby="adicionarTarefaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adicionarTarefaModalLabel">Adicionar Tarefa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="AdicionarTarefa">
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="descricao" name="Descricao" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="dataPrevisaoConclusao" class="form-label">Data Prevista de Conclusão</label>
+                        <input type="date" class="form-control" id="dataPrevisaoConclusao" name="DataPrevisaConclusao" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Tarefa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar tarefa -->
+<div class="modal fade" id="editarTarefaModal" tabindex="-1" aria-labelledby="editarTarefaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarTarefaModalLabel">Editar Tarefa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="editarTarefaForm" asp-action="EditarTarefa">
+                    <input type="hidden" id="tarefaId" name="Id" />
+                    <div class="mb-3">
+                        <label for="descricaoEditar" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="descricaoEditar" name="Descricao" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="dataPrevisaoConclusaoEditar" class="form-label">Data Prevista de Conclusão</label>
+                        <input type="date" class="form-control" id="dataPrevisaoConclusaoEditar" name="DataPrevisaConclusao" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function preencherFormularioEditar(id, descricao, dataPrevisaoConclusao) {
+        document.getElementById('tarefaId').value = id;
+        document.getElementById('descricaoEditar').value = descricao;
+        document.getElementById('dataPrevisaoConclusaoEditar').value = dataPrevisaoConclusao;
+    }
+</script>

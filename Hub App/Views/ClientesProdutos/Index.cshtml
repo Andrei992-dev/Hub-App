@@ -1,0 +1,176 @@
+﻿@using Hub_App.Models.ClientesProdutos
+@{
+    ViewData["Title"] = "Caluladora de Gastos";
+    ViewBag.Title = "Clientes e Produtos";
+    var clientes = ViewBag.Clientes as List<Cliente>;
+}
+<div class="container">
+    <h2>Clientes & Produtos</h2>
+    <div class="container text-center">
+        <div class="row justify-content-md-center">
+
+            <div class="col col-lg-2">
+                <i class="bi bi-person-plus-fill text-primary"></i>
+                <button type="button" class="btn btn-primary mb-2" style="width: 10em" data-bs-toggle="modal" data-bs-target="#adicionarClienteModal">
+                    Adicionar Cliente
+                </button>
+            </div>
+            <div class="col col-lg-2">
+                <i class="bi bi-basket3-fill text-primary"></i>
+                <a class="btn btn-primary" style="width: 10em" asp-controller="ClientesProdutos" asp-action="GerenciarProdutos">Produtos</a>
+            </div>
+        </div>
+        <div class="row justify-content-md-center" style="width: 50vh">
+            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Pesquisar clientes..." onkeyup="filterTable()" />
+        </div>
+    </div>
+    <style>
+        div i {
+            font-size: 4em;
+        }
+    </style>
+        
+    <table class="table table-striped" id="clientesTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>Ações</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @if (clientes != null && clientes.Any())
+            {
+                foreach (var cliente in clientes)
+                {
+                    <tr>
+                        <td>@cliente.Id</td>
+                        <td>@cliente.Nome</td>
+                        <td>@cliente.Telefone</td>
+                        <td>@cliente.Endereco</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Ações">
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editarClienteModal" style="margin-right: 10px"
+                                        onclick="openEditModal('@cliente.Id', '@cliente.Nome', '@cliente.Telefone', '@cliente.Endereco')">
+                                    Editar
+                                </button>
+                                <form method="post" asp-action="ExcluirCliente">
+                                    <input type="hidden" name="id" value="@cliente.Id" />
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este gasto?');">Excluir</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">Nenhum cliente cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="adicionarClienteModal" tabindex="-1" aria-labelledby="adicionarClienteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionarClienteModalLabel">Adicionar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário dentro do modal -->
+                    <form asp-action="AdicionarCliente" method="post">
+                        <div class="form-group">
+                            <label for="Nome">Nome</label>
+                            <input type="text" class="form-control" id="Nome" name="Nome" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="Endereco">Endereço</label>
+                            <input type="text" class="form-control" id="Endereco" name="Endereco" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="Telefone">Telefone</label>
+                            <input type="number" class="form-control" id="Telefone" name="Telefone" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Adicionar Cliente</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarClienteModal" tabindex="-1" aria-labelledby="editarClienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarClienteModalLabel">Editar Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulário para editar cliente -->
+                <form asp-action="EditarCliente" method="post">
+                    <input type="hidden" id="editId" name="Id" />
+                    <div class="form-group">
+                        <label for="editNome">Nome</label>
+                        <input type="text" class="form-control" id="editNome" name="Nome" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="editEndereco">Endereco</label>
+                        <input type="text" class="form-control" id="editEndereco" name="Endereco" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="editTelefone">Telefone</label>
+                        <input type="number" class="form-control" id="editTelefone" name="Telefone" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterTable() {
+        // Obter o valor do campo de busca
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toLowerCase();
+        var table = document.getElementById("clientesTable");
+        var tr = table.getElementsByTagName("tr");
+
+        // Percorrer todas as linhas da tabela
+        for (var i = 1; i < tr.length; i++) {
+            var tdNome = tr[i].getElementsByTagName("td")[1]; // Coluna "Nome"
+            var tdTelefone = tr[i].getElementsByTagName("td")[2]; // Coluna "Telefone"
+            var tdEndereco = tr[i].getElementsByTagName("td")[3]; // Coluna "Endereço"
+            if (tdNome || tdTelefone || tdEndereco) {
+                var nome = tdNome.textContent || tdNome.innerText;
+                var telefone = tdTelefone.textContent || tdTelefone.innerText;
+                var endereco = tdEndereco.textContent || tdEndereco.innerText;
+
+                // Verifique se o valor pesquisado está em alguma das colunas
+                if (nome.toLowerCase().indexOf(filter) > -1 || telefone.toLowerCase().indexOf(filter) > -1 || endereco.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function openEditModal(id, nome, telefone, endereco) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editNome").value = nome;
+        document.getElementById("editTelefone").value = telefone;
+        document.getElementById("editEndereco").value = endereco;
+    }
+</script>
