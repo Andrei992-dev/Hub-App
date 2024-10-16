@@ -68,17 +68,55 @@ namespace Hub_App.Service.ClientesProdutos
         #endregion
 
         #region Produtos
-        public async Task<List<Cliente>> CarregarProdutosAsync()
+        public async Task<List<Produto>> CarregarProdutosAsync()
         {
-            if (!File.Exists(_filePathClientes))
+            if (!File.Exists(_filePathProdutos))
             {
-                return new List<Cliente>();
+                return new List<Produto>();
             }
 
-            var json = await File.ReadAllTextAsync(_filePathClientes);
-            return JsonSerializer.Deserialize<List<Cliente>>(json) ?? new List<Cliente>();
+            var json = await File.ReadAllTextAsync(_filePathProdutos);
+            return JsonSerializer.Deserialize<List<Produto>>(json) ?? new List<Produto>();
         }
+        public async Task SalvarProdutoAsync(Produto produto)
+        {
+            var produtos = await CarregarProdutosAsync();
+            produto.Id = produtos.Count > 0 ? produtos.Max(x => x.Id) + 1 : 1;
 
+            produtos.Add(produto);
+            var json = JsonSerializer.Serialize(produtos, new JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(_filePathProdutos, json);
+        }
+        public async Task ExcluirProdutoAsync(int id)
+        {
+            var produtos = await CarregarProdutosAsync();
+            var produto = produtos.FirstOrDefault(t => t.Id == id);
+
+            if (produto != null)
+            {
+                produtos.Remove(produto);
+
+                var json = JsonSerializer.Serialize(produtos, new JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync(_filePathProdutos, json);
+            }
+        }
+        public async Task EditarProdutoAsync(Produto produtoAtualizado)
+        {
+            var produtos = await CarregarProdutosAsync();
+            var produto = produtos.FirstOrDefault(c => c.Id == produtoAtualizado.Id);
+            if (produto != null)
+            {
+                produto.Nome = produtoAtualizado.Nome;
+                produto.Preco = produtoAtualizado.Preco;
+                produto.FotoItem = produtoAtualizado.FotoItem;
+                await SalvarProdutosAsync(produtos);
+            }
+        }
+        private async Task SalvarProdutosAsync(List<Produto> produtos)
+        {
+            var json = JsonSerializer.Serialize(produtos, new JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(_filePathProdutos, json);
+        }
         #endregion
     }
 }

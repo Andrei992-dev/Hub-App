@@ -1,18 +1,1 @@
-[
-  {
-    "Id": 1,
-    "Descricao": "Arrumar a casa",
-    "DataCriacao": "2024-10-15T13:06:44.8887447-03:00",
-    "DataPrevisaConclusao": "2024-10-16T00:00:00",
-    "DataConclusao": null,
-    "Concluida": false
-  },
-  {
-    "Id": 2,
-    "Descricao": "Fazer Compras",
-    "DataCriacao": "2024-10-15T13:07:10.9535438-03:00",
-    "DataPrevisaConclusao": "2024-11-02T00:00:00",
-    "DataConclusao": "2024-10-15T13:07:15.8523483-03:00",
-    "Concluida": true
-  }
-]
+[]
