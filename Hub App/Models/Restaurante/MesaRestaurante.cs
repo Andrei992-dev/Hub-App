@@ -3,6 +3,10 @@
     public class MesaRestaurante
     {
         public int Id { get; set; }
-        public List<PratoRestaurante> Prato { get; set; } = new List<PratoRestaurante>();
+        public int ClienteRestauranteId { get; set; }
+        ClienteRestaurante Cliente { get; set; } = new ClienteRestaurante();
+        public int GarconRestauranteId { get; set; }
+        public GarconRestaurante Garcon { get; set; } = new GarconRestaurante();
+        public List<PratoRestaurante> Pratos { get; set; } = new List<PratoRestaurante>();
     }
 }
