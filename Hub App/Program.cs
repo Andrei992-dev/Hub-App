@@ -1,6 +1,7 @@
 using Hub_App.Service.CalculadoraDiaria;
 using Hub_App.Service.ClientesProdutos;
 using Hub_App.Service.ListaTarefas;
+using Hub_App.Service.Restaurante;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<GastosService>();
 builder.Services.AddScoped<TarefasService>();
 builder.Services.AddScoped<ClienteProdutoService>();
+builder.Services.AddScoped<RestauranteService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

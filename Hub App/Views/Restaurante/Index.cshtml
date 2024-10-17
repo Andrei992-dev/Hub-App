@@ -1,0 +1,115 @@
+﻿@using Hub_App.Models.Restaurante
+@model MesaRestaurante
+@{
+    ViewData["Title"] = "Restaurante";
+}
+
+<h1>Restaurante</h1>
+<div class="container">
+    <h2>Criar Nova Mesa</h2>
+
+    <!-- Formulário para escolher Cliente, Garçom e os Pratos -->
+    <form asp-action="CriarMesa" method="post">
+        <div class="form-group">
+            <label for="ClienteRestauranteId">Cliente</label>
+            <div class="d-flex">
+                <select class="form-control" id="ClienteRestauranteId" name="ClienteRestauranteId" required>
+                    @foreach (var cliente in ViewBag.Clientes)
+                    {
+                        <option value="@cliente.Id">@cliente.Nome</option>
+                    }
+                </select>
+                <a class="btn btn-success ml-2" asp-action="CriarCliente" asp-controller="Restaurante">Novo Cliente</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="GarconRestauranteId">Garçom</label>
+            <div class="d-flex">
+                <select class="form-control" id="GarconRestauranteId" name="GarconRestauranteId" required>
+                    @foreach (var garcon in ViewBag.Garcons)
+                    {
+                        <option value="@garcon.Id">@garcon.Nome</option>
+                    }
+                </select>
+                <a class="btn btn-success ml-2" asp-action="CriarGarcon" asp-controller="Restaurante">Novo Garçom</a>
+            </div>
+        </div>
+
+        <!-- Lista de pratos já criados -->
+        <div class="form-group">
+            <label for="PratosDisponiveis">Pratos Disponíveis</label>
+            <select class="form-control" id="PratosDisponiveis" name="pratosDisponiveis" multiple required>
+                @foreach (var prato in ViewBag.Pratos)
+                {
+                    <option value="@prato.Id">@prato.Nome - R$@prato.Preco</option>
+                }
+            </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="adicionarPratoSelecionado()">Adicionar Prato à Mesa</button>
+
+        <!-- Lista de pratos selecionados para a mesa -->
+        <div class="form-group">
+            <label for="Pratos">Pratos Selecionados</label>
+            <select class="form-control" id="Pratos" name="pratosSelecionados" multiple required>
+                <!-- A lista será preenchida dinamicamente pelo JavaScript -->
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Criar Mesa</button>
+    </form>
+
+    <!-- Formulário para adicionar novos pratos -->
+    <h3>Adicionar Novo Prato</h3>
+    <div class="form-group">
+        <label for="NomePrato">Nome do Prato</label>
+        <input type="text" class="form-control" id="NomePrato" name="NomePrato" placeholder="Digite o nome do prato">
+    </div>
+    <div class="form-group">
+        <label for="PrecoPrato">Preço do Prato</label>
+        <input type="number" class="form-control" id="PrecoPrato" name="PrecoPrato" placeholder="Digite o preço do prato" step="0.01">
+    </div>
+    <button type="button" class="btn btn-success" onclick="adicionarPrato()">Adicionar Prato</button>
+</div>
+
+<script>
+    let pratos = [];
+
+    function adicionarPrato() {
+        const nomePrato = document.getElementById('NomePrato').value;
+        const precoPrato = document.getElementById('PrecoPrato').value;
+
+        if (nomePrato && precoPrato) {
+            const pratoId = pratos.length + 1;  // Simular um ID para o prato
+            pratos.push({ id: pratoId, nome: nomePrato, preco: precoPrato });
+
+            const selectPratos = document.getElementById('Pratos');
+            const option = document.createElement('option');
+            option.value = pratoId;
+            option.text = `${nomePrato} - R$${precoPrato}`;
+            selectPratos.add(option);
+
+            // Limpar campos do formulário
+            document.getElementById('NomePrato').value = '';
+            document.getElementById('PrecoPrato').value = '';
+        } else {
+            alert('Preencha todos os campos do prato antes de adicionar.');
+        }
+    }
+
+    function adicionarPratoSelecionado() {
+        const selectDisponiveis = document.getElementById('PratosDisponiveis');
+        const selectSelecionados = document.getElementById('Pratos');
+
+        Array.from(selectDisponiveis.selectedOptions).forEach(option => {
+            const optionClone = option.cloneNode(true);
+            selectSelecionados.add(optionClone);
+        });
+
+        // Remover as opções selecionadas do select de disponíveis
+        Array.from(selectDisponiveis.selectedOptions).forEach(option => {
+            option.remove();
+        });
+    }
+</script>

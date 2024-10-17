@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 1,
+    "ClienteRestauranteId": 1,
+    "GarconRestauranteId": 1,
+    "Garcon": {
+      "Id": 0,
+      "Nome": ""
+    },
+    "Pratos": []
+  }
+]

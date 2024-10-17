@@ -1,0 +1,16 @@
+﻿@using Hub_App.Models.Restaurante
+@model GarconRestaurante
+@{
+    ViewData["Title"] = "Criar Garçom";
+}
+
+<h2>Criar Garçom</h2>
+
+<form asp-action="CriarGarcon" method="post">
+    <div class="form-group">
+        <label for="Nome">Nome</label>
+        <input type="text" class="form-control" id="Nome" name="Nome" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar Garçom</button>
+</form>
+
